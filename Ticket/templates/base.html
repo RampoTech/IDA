@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_settings.site_name }} - Ticketing System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <script>
+        // Init Theme
+        (function () {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        })();
+    </script>
+
+    <style>
+        :root {
+            --primary-color: {
+                    {
+                    site_settings.primary_color
+                }
+            }
+
+            ;
+
+            --secondary-color: {
+                    {
+                    site_settings.secondary_color
+                }
+            }
+
+            ;
+        }
+
+        .bg-primary-custom {
+            background-color: var(--primary-color) !important;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white !important;
+            /* Force White text for consistency */
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            /* Strong shadow for visibility against light colors */
+        }
+
+        .btn-primary-custom:hover {
+            opacity: 0.9;
+            color: white !important;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        /* Navbar visibility fix */
+        .navbar-dark .navbar-brand,
+        .navbar-dark .nav-link,
+        .navbar-dark .navbar-toggler-icon {
+            color: white !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            /* Very strong shadow */
+        }
+
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(0, 0, 0, 0.1);
+            /* Slight dark bg for toggler */
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary-custom mb-4">
+        <div class="container">
+            <a class="navbar-brand"
+                href="{% if user.is_authenticated %}{% url 'ticket_list' %}{% else %}{% url 'home' %}{% endif %}">
+                {% if site_settings.logo %}
+                <img src="{{ site_settings.logo.url }}" alt="Logo">
+                {% endif %}
+                {{ site_settings.site_name }}
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <!-- Theme Toggle -->
+                    <li class="nav-item me-2">
+                        <button class="btn btn-link nav-link px-2" id="theme-toggle" type="button"
+                            aria-label="Toggle theme">
+                            <i class="bi bi-moon-stars-fill" id="theme-icon"></i>
+                        </button>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link">Hello, {{ user.username }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ticket_list' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    {% if user.role == 'ADMIN' or user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/">Admin Panel</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_user' %}">Create User</a>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Theme Toggle Logic
+        document.addEventListener('DOMContentLoaded', function () {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const html = document.documentElement;
+
+            // Set initial icon
+            const currentTheme = html.getAttribute('data-bs-theme');
+            updateIcon(currentTheme);
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                html.setAttribute('data-bs-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateIcon(newTheme);
+            });
+
+            function updateIcon(theme) {
+                if (theme === 'dark') {
+                    themeIcon.classList.remove('bi-moon-stars-fill');
+                    themeIcon.classList.add('bi-sun-fill');
+                } else {
+                    themeIcon.classList.remove('bi-sun-fill');
+                    themeIcon.classList.add('bi-moon-stars-fill');
+                }
+            }
+        });
+    </script>
+
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Chat Widget Container -->
+    {% if user.is_authenticated %}
+    {% include 'chat/widget.html' %}
+    {% endif %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

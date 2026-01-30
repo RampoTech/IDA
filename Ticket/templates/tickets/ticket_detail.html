@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h3 class="card-title mb-0">{{ ticket.title }}</h3>
+                <span class="badge 
+                    {% if ticket.status == 'OPEN' %}bg-success
+                    {% elif ticket.status == 'IN_PROGRESS' %}bg-warning
+                    {% else %}bg-secondary{% endif %}">
+                    {{ ticket.get_status_display }}
+                </span>
+                <div>
+                    {% if can_edit %}
+                    <a href="{% url 'ticket_update' pk=ticket.pk %}" class="btn btn-sm btn-outline-primary ms-2">Edit
+                        Ticket</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Priority:</strong>
+                    <span class="badge 
+                        {% if ticket.priority == 'CRITICAL' %}bg-danger
+                        {% elif ticket.priority == 'HIGH' %}bg-warning
+                        {% else %}bg-info{% endif %}">
+                        {{ ticket.get_priority_display }}
+                    </span>
+                    <span class="ms-3 text-muted">Created by {{ ticket.created_by.username }} on {{
+                        ticket.created_at|date:"M d, Y" }}</span>
+                </div>
+                <div class="mb-4">
+                    <h5>Description</h5>
+                    <p class="card-text">{{ ticket.description|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Comments</h5>
+            </div>
+            <div class="card-body">
+                <div class="comments-list mb-4">
+                    {% for comment in ticket.comments.all %}
+                    <div class="mb-3 pb-2 border-bottom">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ comment.author.username }}</strong>
+                            <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                        </div>
+                        <p class="mb-0">{{ comment.text|linebreaksbr }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center">No comments yet.</p>
+                    {% endfor %}
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ comment_form.text }}
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom btn-sm">Post Comment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Sidebar info or actions could go here -->
+    </div>
+</div>
+{% endblock %}

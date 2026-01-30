@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="landing-page">
+    <!-- Hero Section -->
+    <div class="px-4 py-5 my-5 text-center">
+        <h1 class="display-5 fw-bold">{{ site_settings.site_name }}</h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">The Enterprise-Grade Ticketing Solution for Modern Support Teams. Streamline your
+                workflow, enhance customer satisfaction, and manage issues with ease.</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                {% if user.is_authenticated %}
+                <a href="{% url 'ticket_list' %}" class="btn btn-primary-custom btn-lg px-4 gap-3">Go to Dashboard</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary-custom btn-lg px-4 gap-3">Get Started</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg px-4">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container px-4 py-5" id="features">
+        <h2 class="pb-2 border-bottom text-center">Why Choose Us?</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div class="col">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3 shadow-sm">
+                    <div
+                        class="icon-square bg-primary-custom text-white d-inline-flex align-items-center justify-content-center fs-4 rounded-circle mb-3 p-3">
+                        <i class="bi bi-ticket-perforated"></i>
+                    </div>
+                    <h2>Smart Ticketing</h2>
+                    <p>Organize, prioritize, and track support tickets efficiently. Our intuitive interface ensures no
+                        issue goes unnoticed.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3 shadow-sm">
+                    <div
+                        class="icon-square bg-primary-custom text-white d-inline-flex align-items-center justify-content-center fs-4 rounded-circle mb-3 p-3">
+                        <i class="bi bi-chat-dots"></i>
+                    </div>
+                    <h2>Live Support Chat</h2>
+                    <p>Connect with your customers instantly. Our integrated chat widget allows seamless real-time
+                        communication.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="h-100 p-5 bg-body-tertiary border rounded-3 shadow-sm">
+                    <div
+                        class="icon-square bg-primary-custom text-white d-inline-flex align-items-center justify-content-center fs-4 rounded-circle mb-3 p-3">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <h2>Secure & Scalable</h2>
+                    <p>Built with Enterprise security standards. Role-Based Access Control ensures data privacy and
+                        integrity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="container py-5">
+        <div class="row text-center text-muted">
+            <div class="col-md-4">
+                <h3 class="fw-bold">99.9%</h3>
+                <p>Uptime</p>
+            </div>
+            <div class="col-md-4">
+                <h3 class="fw-bold">24/7</h3>
+                <p>Support Availability</p>
+            </div>
+            <div class="col-md-4">
+                <h3 class="fw-bold">10k+</h3>
+                <p>Tickets Resolved</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-primary-custom text-white text-center py-5 rounded-3 mb-5">
+        <div class="container">
+            <h2 class="mb-3">Ready to Transform Your Support?</h2>
+            <p class="lead mb-4">Join thousands of companies providing exceptional support with {{
+                site_settings.site_name }}.</p>
+            <a href="{% url 'login' %}" class="btn btn-light btn-lg px-4">Start Free Trial</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Additional custom styles if needed, though most is handled by Bootstrap classes */
+    .icon-square {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.75rem;
+    }
+</style>
+{% endblock %}
